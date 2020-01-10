@@ -3,8 +3,8 @@ package main
 import (
 	"time"
 
-	log "github.com/Sirupsen/logrus"
 	"github.com/hashicorp/consul/api"
+	log "github.com/sirupsen/logrus"
 )
 
 const lockWaitTime = 15 * time.Second

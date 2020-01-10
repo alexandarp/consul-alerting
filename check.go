@@ -5,8 +5,8 @@ import (
 	"strings"
 
 	"fmt"
-	log "github.com/Sirupsen/logrus"
 	"github.com/hashicorp/consul/api"
+	log "github.com/sirupsen/logrus"
 )
 
 const alertingKVRoot = "service/consul-alerting"

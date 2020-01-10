@@ -16,7 +16,7 @@ bin: bin/$(NAME) ## Build application binary
 pkg: pkg/$(NAME).tar.gz ## Build application 'serviceball'
 
 bin/$(NAME): $(SOURCE_FILES)
-	go build -o "bin/$(NAME)" -ldflags $(EFFECTIVE_LD_FLAGS) .
+	env GOOS=linux GOARCH=amd64 go build -o "bin/$(NAME)" -ldflags $(EFFECTIVE_LD_FLAGS) .
 
 pkg/$(NAME).tar.gz: bin/$(NAME)
 	mkdir -p pkg/

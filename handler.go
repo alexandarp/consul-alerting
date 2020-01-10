@@ -1,16 +1,18 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"net"
+	"strconv"
 	"strings"
 
 	"time"
 
-	log "github.com/Sirupsen/logrus"
 	"github.com/darkcrux/gopherduty"
 	"github.com/hashicorp/consul/api"
 	"github.com/nlopes/slack"
+	log "github.com/sirupsen/logrus"
 	"gopkg.in/gomail.v2"
 )
 
@@ -121,12 +123,30 @@ const slackMessageFormat = `
 `
 
 func (handler SlackHandler) Alert(datacenter string, alert *AlertState) {
-	api := slack.New(handler.Token)
 	message := fmt.Sprintf(slackMessageFormat, alert.Message, alert.Details)
 	tries := 0
 
 	for tries <= handler.MaxRetries {
-		_, _, err := api.PostMessage(handler.ChannelName, message, slack.PostMessageParameters{})
+		attachment := slack.Attachment{
+			Color:         "good",
+			Fallback:      "",
+			AuthorName:    "https://github.com/kyhavlov/consul-alerting",
+			AuthorSubname: "github.com",
+			AuthorLink:    "https://github.com/kyhavlov",
+			AuthorIcon:    "https://avatars2.githubusercontent.com/u/4177697?s=400&v=4",
+			Text:          message,
+			Footer:        "consul-alerting",
+			FooterIcon:    "https://platform.slack-edge.com/img/default_application_icon.png",
+			Ts:            json.Number(strconv.FormatInt(time.Now().Unix(), 10)),
+		}
+
+		msg := slack.WebhookMessage{
+			Attachments: []slack.Attachment{attachment},
+		}
+		err := slack.PostWebhook(handler.Token, &msg)
+		if err != nil {
+			fmt.Println(err)
+		}
 
 		if err != nil {
 			log.Errorf("Error sending alert to Slack (channel: %s): %s", handler.ChannelName, err)

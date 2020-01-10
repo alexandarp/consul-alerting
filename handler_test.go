@@ -5,9 +5,9 @@ import (
 	"os"
 	"testing"
 
-	log "github.com/Sirupsen/logrus"
-	"github.com/Sirupsen/logrus/hooks/test"
 	"github.com/nlopes/slack"
+	log "github.com/sirupsen/logrus"
+	"github.com/sirupsen/logrus/hooks/test"
 )
 
 func TestHandler_stdout(t *testing.T) {
